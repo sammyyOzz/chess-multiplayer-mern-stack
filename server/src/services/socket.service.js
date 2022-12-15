@@ -15,20 +15,24 @@ function webSocket(server) {
     });
     
     io.on('connection', (socket) => {
-        console.log('client connected!')
+      console.log('client connected!')
 
-        socket.on('setup', ({ game }) => {
-          socket.join(game)
-        })
+      socket.on('setup', (gameId) => {
+        socket.join(gameId)
+      })
 
-        socket.on('new_message', ({ game, data }) => {
-          io.in(game).emit('message', data)
-          console.log(game, data)
-        })
+      socket.on('player_two_joined', (gameId) => {
+        io.in(gameId).emit('player_two_joined', null)
+      })
 
-        socket.on("disconnect", () => {
-          console.log("Client disconnected");
-        });
+      socket.on('new_move', ({ gameId, data }) => {
+        io.in(gameId).emit('move_piece', data)
+        console.log(gameId, data)
+      })
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected");
+      });
     })
 
     return io

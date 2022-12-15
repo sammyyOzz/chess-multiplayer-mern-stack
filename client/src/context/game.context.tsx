@@ -14,16 +14,20 @@ export const useGameContext = () => {
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameId, setGameId] = useState('');
   const [isGameCreator, setIsGameCreator] = useState<null | boolean>(null);
+  const [isPlayerTwo, setIsPlayerTwo] = useState(false);
 
   const updateGameId = (gameId: string) => setGameId(gameId);
   const updateIsGameCreator = (value: boolean) => setIsGameCreator(value);
+  const updateIsPlayerTwo = () => setIsPlayerTwo(true);
 
   return (
     <GameContext.Provider value={{ 
       gameId,
       updateGameId,
       isGameCreator,
-      updateIsGameCreator
+      updateIsGameCreator,
+      isPlayerTwo,
+      updateIsPlayerTwo
      }}>
       { children }
     </GameContext.Provider>

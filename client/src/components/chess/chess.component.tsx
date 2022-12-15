@@ -6,12 +6,13 @@ import { Move } from "@/types";
 import socketIO from "socket.io-client";
 import { useGameContext } from "@/context/game.context";
 import Options from "../options/options.component";
+import { getBoardOrientation, isPlayerTurn } from '@/helpers';
 
 const ENDPOINT = process.env.NODE_ENV === 'production' 
     ? "/"
     : "http://localhost:5000"
 
-// let socket:any;
+let socket:any;
 
 const game = new Chess();
 let randomMoves: Array<string> = [];
@@ -19,7 +20,7 @@ let randomMoves: Array<string> = [];
 export default function ChessGame() {
   const [position, setPosition] = useState(game.fen());
 
-  const gameStore = useGameContext()
+  const controller = useGameContext()
 
   const syncGameUI = () => setPosition(game.fen())
 
@@ -34,18 +35,27 @@ export default function ChessGame() {
   //   return () => clearInterval(interval)
   // }, [randomMoves])
 
-  // useEffect(() => {
-  //   socket = socketIO(ENDPOINT, { withCredentials: true });
+  useEffect(() => {
+    if (controller?.gameId) {
+      socket = socketIO(ENDPOINT, { withCredentials: true });
+      socket.emit('setup', controller?.gameId);
+      socket.on('move_piece', (data: string) => {
+        game.load(data);
+        syncGameUI();
+      })
+      socket.on('player_two_joined', () => {
+        controller?.updateIsPlayerTwo();
+        console.log('player two has joined the game!');
+      })
 
-  //   socket.emit('setup', { game: gameStore?.game });
-  //   socket.on('message', (data: { game: string }) => {
-  //     game.load(data.game);
-  //     syncGameUI();
-  //   })
-  // }, [gameStore?.game])
+      if (controller?.isGameCreator === false) {
+        socket.emit('player_two_joined', controller?.gameId)
+      }
+    }
+  }, [controller?.gameId])
 
-  
   const movePiece = (move: Move) => {
+    if (controller?.isPlayerTwo && !isPlayerTurn(controller?.isGameCreator, game.turn())) return;
     const result = game.move(move)
     // console.log(game.ascii())
     return result
@@ -63,12 +73,10 @@ export default function ChessGame() {
 
     syncGameUI()
 
-    // socket.emit('new_message', { 
-    //   game: gameStore?.game, 
-    //   data: {
-    //     game: game.fen()
-    //   }
-    // })
+    socket.emit('new_move', { 
+      gameId: controller?.gameId, 
+      data: game.fen()
+    })
     
     return true;
   }
@@ -82,13 +90,11 @@ export default function ChessGame() {
     <div className={styles.container}>
       <Chessboard
         position={position}
-        // onSquareClick={data => console.log(game.get(data))}
         onPieceDrop={onDrop}
-        getPositionObject={data => console.log(data)}
-        // boardOrientation="black"
+        // getPositionObject={data => console.log(data)}
+        boardOrientation={getBoardOrientation(controller?.isGameCreator)}
       />
-      <Options />
-      {/* <button onClick={undo}>U</button> */}
+      <Options handleUndo={undo} />
     </div>
   );
 }

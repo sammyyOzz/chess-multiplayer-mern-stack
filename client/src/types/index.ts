@@ -17,4 +17,6 @@ export interface GameContextType {
   updateGameId: (data: string) => void;
   isGameCreator: null | boolean;
   updateIsGameCreator: (data: boolean) => void;
+  isPlayerTwo: boolean;
+  updateIsPlayerTwo: () => void;
 }

@@ -1,9 +1,13 @@
 import styles from './options.module.css';
 
-function Options() {
+interface OptionsProps {
+  handleUndo: () => void;
+}
+
+function Options({ handleUndo }: OptionsProps) {
   return (
     <div className={styles.options}>
-      <button>Undo</button>
+      <button onClick={handleUndo}>Undo</button>
       <button>End Game</button>
     </div>
   )

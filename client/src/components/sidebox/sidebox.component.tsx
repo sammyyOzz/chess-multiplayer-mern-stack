@@ -24,6 +24,16 @@ function Sidebox() {
     controller.updateIsGameCreator(false);
   }
 
+  if (controller?.isPlayerTwo) {
+    return (
+      <div className={styles.container}>
+        <div>
+          The game has started...
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.container}>
       <div>
