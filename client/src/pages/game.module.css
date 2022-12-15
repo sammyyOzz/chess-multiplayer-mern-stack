@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+}
+
+.chess-container {
+  width: 700px;
+  /* background-color: red; */
+}
+
+.side-container {
+  width: calc(100% - 700px);
+}

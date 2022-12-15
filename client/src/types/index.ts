@@ -7,12 +7,14 @@ export interface Move {
 }
 
 export interface Game {
-  player1: string;
-  player2: string;
-  gameId: string;
+  player1?: string;
+  player2?: string;
+  gameId?: string;
 }
 
 export interface GameContextType {
-  game: Game;
-  updateGameData: (data: Game) => void;
+  gameId: string;
+  updateGameId: (data: string) => void;
+  isGameCreator: null | boolean;
+  updateIsGameCreator: (data: boolean) => void;
 }

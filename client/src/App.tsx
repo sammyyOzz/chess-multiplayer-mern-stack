@@ -1,15 +1,13 @@
 import './App.css'
-import ChessGame from '@/components/chess/chessgame.component'
 import { GameProvider } from '@/context/game.context'
+import Game from './pages/game.page'
 
 function App() {
 
   return (
-    <div className="App">
-      <GameProvider>
-        <ChessGame />
-      </GameProvider>
-    </div>
+    <GameProvider>
+      <Game />
+    </GameProvider>
   )
 }
 

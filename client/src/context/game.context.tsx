@@ -12,18 +12,19 @@ export const useGameContext = () => {
 }
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
-  const [game, setGame] = useState<Game>({
-    player1: '',
-    player2: '',
-    gameId: ''
-  })
+  const [gameId, setGameId] = useState('');
+  const [isGameCreator, setIsGameCreator] = useState<null | boolean>(null);
 
-  const updateGameData = (data: Game) => {
-    setGame(data)
-  }
+  const updateGameId = (gameId: string) => setGameId(gameId);
+  const updateIsGameCreator = (value: boolean) => setIsGameCreator(value);
 
   return (
-    <GameContext.Provider value={{ game, updateGameData }}>
+    <GameContext.Provider value={{ 
+      gameId,
+      updateGameId,
+      isGameCreator,
+      updateIsGameCreator
+     }}>
       { children }
     </GameContext.Provider>
   )
